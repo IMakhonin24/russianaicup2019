@@ -1,9 +1,11 @@
 import model.*;
+import model.CustomData.Log;
 
 public class MyStrategy {
 	
 	protected Game game;
 	protected Unit unit;
+	protected Debug debug;
 	protected Unit targetUnit = null;
 	protected LootBox targetLootBox = null;
 	protected Vec2Double targetPosition;
@@ -36,8 +38,12 @@ public class MyStrategy {
 		Game game = getGame();
 		LootBox[] allLootOnMap = game.getLootBoxes();
 		
-//		todo Придумать логику
 	    for (LootBox lootBox : allLootOnMap) {
+	    	
+	    	
+	    	Item item = lootBox.getItem();
+	    	this.debug.draw(new CustomData.Log("loot box = " + item.getClass()  ));
+	    	
 	      if (lootBox.getItem() instanceof Item.Weapon) {
 	        if (targetLootBox == null || distanceSqr(unit.getPosition(),
 	            lootBox.getPosition()) < distanceSqr(unit.getPosition(), targetLootBox.getPosition())) {
@@ -95,8 +101,11 @@ public class MyStrategy {
 		
 		this.setUnit(unit);
 		this.setGame(game);
+		this.debug = debug;
 		
 		this.findEnemy();
+		
+//		LootBoxMap lootBoxMap = new LootBoxMap();
 		
 		this.findLootBox();
 		
@@ -104,6 +113,9 @@ public class MyStrategy {
 		this.setAim();
 		this.setJump();
     
+		
+		
+		
 	    UnitAction action = new UnitAction();
 	    
 	    action.setVelocity(this.targetPosition.getX() - unit.getPosition().getX());
