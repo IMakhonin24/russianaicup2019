@@ -1,150 +1,93 @@
+import behavior.*;
+import behavior.attack.*;
+import behavior.defence.*;
+import behavior.other.*;
 import model.*;
-import model.CustomData.Log;
+import strategy.*;
+import сontroller.*;
 
 public class MyStrategy {
 	
-	protected Game game;
-	protected Unit unit;
-	protected Debug debug;
-	protected Unit targetUnit = null;
-	protected LootBox targetLootBox = null;
-	protected Vec2Double targetPosition;
-	protected Vec2Double aim;
-	protected boolean jump;
-	
-	static double distanceSqr(Vec2Double a, Vec2Double b) {
-		return (a.getX() - b.getX()) * (a.getX() - b.getX()) + (a.getY() - b.getY()) * (a.getY() - b.getY());
-	}
-
-	public void findEnemy(){
-		Unit targetUnit = null;
-		
-		Game game = getGame();
-		Unit[] allUnitsOnMap = game.getUnits();
-		
-		for (Unit someUnit : allUnitsOnMap) {
-			if (someUnit.getPlayerId() == unit.getPlayerId()) break;
-			if (targetUnit == null || distanceSqr(unit.getPosition(), someUnit.getPosition()) < distanceSqr(unit.getPosition(), targetUnit.getPosition())) {
-				targetUnit = someUnit;
-	        }
-		}
-		
-		this.targetUnit = targetUnit;
-	}
-	
-	public void findLootBox() {
-		LootBox targetLootBox = null;
-		
-		Game game = getGame();
-		LootBox[] allLootOnMap = game.getLootBoxes();
-		
-	    for (LootBox lootBox : allLootOnMap) {
-	    	
-	    	
-	    	Item item = lootBox.getItem();
-	    	this.debug.draw(new CustomData.Log("loot box = " + item.getClass()  ));
-	    	
-	      if (lootBox.getItem() instanceof Item.Weapon) {
-	        if (targetLootBox == null || distanceSqr(unit.getPosition(),
-	            lootBox.getPosition()) < distanceSqr(unit.getPosition(), targetLootBox.getPosition())) {
-	        	targetLootBox = lootBox;
-	        }
-	      }
-	    }
-	    
-	    this.targetLootBox = targetLootBox;
-	}
-	
-	public void findTargetPosition() {
-
-		Unit unit = getUnit();
-
-		Vec2Double targetPosition = unit.getPosition();
-		
-	    if (unit.getWeapon() == null && this.targetLootBox != null) {
-	    	targetPosition = this.targetLootBox.getPosition();
-	    } else if (this.targetUnit != null) {
-	    	targetPosition = this.targetUnit.getPosition();
-	    }
-	    
-	    this.targetPosition = targetPosition;
-	}
-	
-	public void setAim() {
-		Vec2Double aim;
-	    if (this.targetUnit != null) {
-	    	double aimX = this.targetUnit.getPosition().getX() - unit.getPosition().getX();
-	    	double aimY = this.targetUnit.getPosition().getX() - unit.getPosition().getX();
-	    	aim = new Vec2Double(aimX,aimY);
-	    }else {
-	    	aim = new Vec2Double(0, 0);
-	    }
-	    this.aim = aim;
-	}
-	
-	public void setJump() {
-		boolean jump = false;
-		
-	    if (this.targetPosition.getX() > unit.getPosition().getX() && game.getLevel()
-	        .getTiles()[(int) (unit.getPosition().getX() + 1)][(int) (unit.getPosition().getY())] == Tile.WALL) {
-	      jump = true;
-	    }
-	    if (this.targetPosition.getX() < unit.getPosition().getX() && game.getLevel()
-	        .getTiles()[(int) (unit.getPosition().getX() - 1)][(int) (unit.getPosition().getY())] == Tile.WALL) {
-	      jump = true;
-	    }
-		
-	    this.jump = jump;
-	}
 	
 	public UnitAction getAction(Unit unit, Game game, Debug debug) {
+				
 		
-		this.setUnit(unit);
-		this.setGame(game);
-		this.debug = debug;
+		ParamsBuilder globalParams = new ParamsBuilder(unit, game);
 		
-		this.findEnemy();
+		//---------------------ENEMY-----------------------
+		EnemyController enemyController = new EnemyController(globalParams);
+		Unit nearestEnemy = enemyController.getNearestEnemy();	
+		globalParams.setEnemyController(enemyController);
+		//---------------------ENEMY-----------------------		
 		
-//		LootBoxMap lootBoxMap = new LootBoxMap();
-		
-		this.findLootBox();
-		
-		this.findTargetPosition();
-		this.setAim();
-		this.setJump();
-    
-		
+		if(unit.getWeapon() != null) {
+			int magazine = unit.getWeapon().getMagazine();
+			debug.draw(new CustomData.Log("magazine: " + magazine));
+		}
 		
 		
-	    UnitAction action = new UnitAction();
-	    
-	    action.setVelocity(this.targetPosition.getX() - unit.getPosition().getX());
-
-	    action.setJump(this.jump);
-	    action.setJumpDown(!this.jump);
-	    action.setAim(this.aim);
-	    action.setShoot(true);
-	    action.setSwapWeapon(false);
-	    action.setPlantMine(false);
-	    
-	    return action;
-  }	
+		
   
-	public void setGame(Game game) {
-		this.game = game;
-	}
-
-	public void setUnit(Unit unit) {
-		this.unit = unit;
-	}
+		//---------------------LOOT-----------------------
+		LootBoxController lootBoxController = new LootBoxController(globalParams);
+		globalParams.setLootBoxController(lootBoxController);
+		
+		LootBox nearestHealthPack = lootBoxController.getNearestHealthPack();
+		LootBox nearestWeapon = lootBoxController.getNearestWeapon();
+		//---------------------LOOT-----------------------
+					
+		Behavior behavior = new Empty(globalParams);
+		if( nearestEnemy != null ) {
+			behavior = new Attack_default(globalParams);
+		}
 	
-	public Game getGame() {
-		return this.game;	
-	}
-
-	public Unit getUnit() {
-		return this.unit;
-	}
-
-  
+		if( nearestHealthPack != null && unit.getHealth() <= Helper.criticalHeath ) {
+			behavior = new Defence_healing(globalParams);
+		}
+		if ( nearestWeapon != null && unit.getWeapon() == null ) {
+			behavior = new Other_findAnyWeapon(globalParams);
+		}
+		debug.draw(new CustomData.Log("Current behavior: " + behavior.getBehaviorName()));
+		
+		Vec2Double targetP = behavior.getTargetPosition();
+		Vec2Double aim = behavior.getAim();
+		
+		//Target vector
+		debug.draw(new CustomData.Line(
+	      new Vec2Float((float) unit.getPosition().getX(), (float) unit.getPosition().getY()),
+	      new Vec2Float((float) targetP.getX(), (float) targetP.getY()),
+	      0.1f,
+	      new ColorFloat(0.255f, 0.0f, 0.0f, 1f) ) );
+		
+		//Aim vector
+		debug.draw(new CustomData.Line(
+			      new Vec2Float((float) unit.getPosition().getX(), (float) unit.getPosition().getY()),
+			      new Vec2Float((float) (aim.getX()+unit.getPosition().getX()), (float) (aim.getY()+unit.getPosition().getY())),
+			      0.1f,
+			      new ColorFloat(0.255f, 0.255f, 0.0f, 1f) ) );
+		
+		Bullet[] arBullets = game.getBullets();
+		
+		for (Bullet someBullet : arBullets) {
+			if (someBullet.getPlayerId() == unit.getPlayerId()) continue;
+			
+			
+			Vec2Double bulletVelocity = someBullet.getVelocity();
+			
+			double x = game.getProperties().getUnitSize().getX();
+			double y = game.getProperties().getUnitSize().getY();			
+			
+			debug.draw(new CustomData.Line(
+				      new Vec2Float((float) nearestEnemy.getPosition().getX(), (float) (nearestEnemy.getPosition().getY()+(y/2))),
+				      new Vec2Float((float) (bulletVelocity.getX()+nearestEnemy.getPosition().getX()), (float) (bulletVelocity.getY()+	(nearestEnemy.getPosition().getY()+(y/2)))),
+				      0.1f,
+				      new ColorFloat(0.255f, 0.255f, 0.0f, 0.06f) ) );
+			
+		}
+		
+		
+		UnitAction action = new BuildAction( behavior ).build();
+		return action;
+  }
+ 
 }
