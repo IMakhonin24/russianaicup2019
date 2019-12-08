@@ -1,3 +1,4 @@
+
 package behavior.defence;
 
 import behavior.*;
@@ -5,22 +6,26 @@ import model.*;
 import strategy.*;
 import сontroller.*;
 
-public class Defence_healing implements Behavior{
+public class Defence_leaveFromMine implements Behavior{
 
-	private final String behaviorName = "Хил";
+	private final String behaviorName = "Убежать от мины";
 	
 	private Vec2Double targetPosition;
 
 	private ParamsBuilder globalParams;
 	
-	public Defence_healing(ParamsBuilder globalParams) {
+	public Defence_leaveFromMine(ParamsBuilder globalParams) {
 		this.globalParams = globalParams;
 		this.setTarget();
 	}	
 	
 	public void setTarget() {
-		LootBoxController lootBoxController = globalParams.getLootBoxController();
-		this.targetPosition = lootBoxController.getNearestHealthPack().getPosition();
+		Mine nearestPlantMine = globalParams.getGameController().getNearestPlantMine();
+		if(Helper.getDitectionForX(globalParams, nearestPlantMine.getPosition()) == 3) {
+			this.targetPosition = new Vec2Double(nearestPlantMine.getPosition().getX() - 5, nearestPlantMine.getPosition().getY());
+		}else {
+			this.targetPosition = new Vec2Double(nearestPlantMine.getPosition().getX() + 5, nearestPlantMine.getPosition().getY());
+		}
 	}
 	
 	public double getVelocity() {
@@ -36,7 +41,7 @@ public class Defence_healing implements Behavior{
 	}
 
 	public boolean getJump() {
-		boolean jump = strategy.Helper.getDefaultJump(globalParams, targetPosition);
+		boolean jump = true;
 		globalParams.setJump(jump);
 		return jump;
 	}

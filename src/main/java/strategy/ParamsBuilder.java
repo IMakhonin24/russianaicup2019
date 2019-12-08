@@ -14,6 +14,7 @@ public class ParamsBuilder {
 	protected Game game;
 	protected EnemyController enemyController;
 	protected LootBoxController lootBoxController;
+	protected GameController gameController;
 	
 	private double velocity;
 	private boolean jump;
@@ -38,6 +39,11 @@ public class ParamsBuilder {
 	
 	public ParamsBuilder setLootBoxController(LootBoxController lootBoxController) {
 		this.lootBoxController = lootBoxController;
+		return this;
+	}
+	
+	public ParamsBuilder setGameController(GameController gameController) {
+		this.gameController = gameController;
 		return this;
 	}
 	
@@ -100,11 +106,15 @@ public class ParamsBuilder {
 		return lootBoxController;
 	}
 	
+	public GameController getGameController() {
+		return gameController;
+	}
+	
 	public double getVelocity() { 
 		return velocity; 
 	}
 	
-    public boolean hetJump() { 
+    public boolean getJump() { 
     	return jump;
 	}
     

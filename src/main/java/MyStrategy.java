@@ -14,6 +14,12 @@ public class MyStrategy {
 		
 		ParamsBuilder globalParams = new ParamsBuilder(unit, game);
 		
+		
+		//---------------------GAME-----------------------
+		GameController gameController = new GameController(globalParams);
+		globalParams.setGameController(gameController);
+		//---------------------GAME-----------------------
+		
 		//---------------------ENEMY-----------------------
 		EnemyController enemyController = new EnemyController(globalParams);
 		Unit nearestEnemy = enemyController.getNearestEnemy();	
@@ -34,19 +40,26 @@ public class MyStrategy {
 		
 		LootBox nearestHealthPack = lootBoxController.getNearestHealthPack();
 		LootBox nearestWeapon = lootBoxController.getNearestWeapon();
+		
 		//---------------------LOOT-----------------------
 					
 		Behavior behavior = new Empty(globalParams);
 		if( nearestEnemy != null ) {
 			behavior = new Attack_default(globalParams);
 		}
-	
+		
 		if( nearestHealthPack != null && unit.getHealth() <= Helper.criticalHeath ) {
 			behavior = new Defence_healing(globalParams);
 		}
 		if ( nearestWeapon != null && unit.getWeapon() == null ) {
 			behavior = new Other_findAnyWeapon(globalParams);
 		}
+		if (Helper.checkMine(globalParams)) {
+			behavior = new Defence_leaveFromMine(globalParams);
+		}
+		
+		
+		
 		debug.draw(new CustomData.Log("Current behavior: " + behavior.getBehaviorName()));
 		
 		Vec2Double targetP = behavior.getTargetPosition();
@@ -86,7 +99,35 @@ public class MyStrategy {
 		}
 		
 		
+		
+		
+		
 		UnitAction action = new BuildAction( behavior ).build();
+		
+		double velocity = globalParams.getVelocity();
+		
+		boolean testMine = false;
+		
+		for (Mine mine : game.getMines()) {
+	        double safeRadius = 1;
+        	double radius = mine.getExplosionParams().getRadius() + safeRadius;
+        	double deltaX = Math.abs(unit.getPosition().getX() - mine.getPosition().getX());
+        	double deltaY = Math.abs(unit.getPosition().getY() - mine.getPosition().getY());
+        	if (mine.getState()==MineState.TRIGGERED) {
+        		if (deltaX<=radius && deltaY<=radius) {
+        			testMine = true;
+        		}
+        	}
+		}
+		
+		if(testMine == true) {
+			debug.draw(new CustomData.Log("Mine: true"));
+		} else {
+			debug.draw(new CustomData.Log("Mine: false"));
+		}
+		
+		
+		
 		return action;
   }
  

@@ -22,35 +22,51 @@ public class Empty implements Behavior{
 	}
 	
 	public double getVelocity() {
-		return strategy.Helper.getDefaultVelocity(globalParams, targetPosition);
+		double velocity = strategy.Helper.getDefaultVelocity(globalParams, targetPosition);
+		globalParams.setVelocity(velocity);
+		return velocity;
 	}
 
 	public Vec2Double getAim() {
-		return strategy.Helper.getDefaultAim(globalParams);
+		Vec2Double aim = strategy.Helper.getDefaultAim(globalParams);
+		globalParams.setAim(aim);
+		return aim;
 	}
 
 	public boolean getJump() {
-		return strategy.Helper.getDefaultJump(globalParams, targetPosition);
+		boolean jump = strategy.Helper.getDefaultJump(globalParams, targetPosition);
+		globalParams.setJump(jump);
+		return jump;
 	}
 
 	public boolean getJumpDown() {
-		return !strategy.Helper.getDefaultJump(globalParams, targetPosition);
+		boolean jumpDown = !globalParams.getJump();
+		globalParams.setJumpDown(jumpDown);
+		return jumpDown;
 	}
 
 	public boolean getShoot() {
-		return strategy.Helper.getDefaultShoot(globalParams, targetPosition);
+		boolean shoot = strategy.Helper.getDefaultShoot(globalParams, targetPosition);
+		globalParams.setShoot(shoot);
+		return shoot;
 	}
 
 	public boolean getSwapWeapon() {
-		return false;
+		boolean swapWeapon = false;
+		globalParams.setSwapWeapon(swapWeapon);
+		return swapWeapon;
 	}
 	
 	public boolean getReload() {
-		return false;
+		boolean reload = false;
+		globalParams.setReload(reload);
+		return reload;
 	}
 
 	public boolean getPlantMine() {
-		return false;
+		boolean plantMine = false;
+		globalParams.setPlantMine(plantMine);
+		return plantMine;
 	}
 	
 	public String getBehaviorName() {

@@ -3,6 +3,8 @@ package strategy;
 import model.ColorFloat;
 import model.CustomData;
 import model.Game;
+import model.Mine;
+import model.MineState;
 import model.Tile;
 import model.Unit;
 import model.Vec2Double;
@@ -41,12 +43,10 @@ public class Helper {
 	public static boolean getDefaultJump(ParamsBuilder globalParams, Vec2Double targetPosition) {
 		Game game = globalParams.getGame();
 		Unit unit = globalParams.getUnit();
+		double velocity = globalParams.getVelocity();
 		
 		boolean jump = getDitectionForY(globalParams, targetPosition) == 3 ;
 		
-//		if(checkWallinNStepByX(globalParams, targetPosition, 1)) {
-//			 jump = true;
-//		}
 	    if (targetPosition.getX() > unit.getPosition().getX() && game.getLevel()
 	        .getTiles()[(int) (unit.getPosition().getX() + 1)][(int) (unit.getPosition().getY())] == Tile.WALL) {
 	      jump = true;
@@ -55,10 +55,31 @@ public class Helper {
 	        .getTiles()[(int) (unit.getPosition().getX() - 1)][(int) (unit.getPosition().getY())] == Tile.WALL) {
 	      jump = true;
 	    }
-		
-		
+	    
 		return jump;
 	}
+	
+	public static boolean checkMine(ParamsBuilder globalParams) {
+		Game game = globalParams.getGame();
+		Unit unit = globalParams.getUnit();
+
+		for (Mine mine : game.getMines()) {
+	        double saveDistance = mine.getExplosionParams().getRadius() + 1;
+	        
+	        double deltaX = Math.abs(unit.getPosition().getX() - mine.getPosition().getX());
+	        double deltaY = Math.abs(unit.getPosition().getY() - mine.getPosition().getY());
+	        
+	        if (mine.getState()==MineState.TRIGGERED) {
+	        	if (deltaX <= saveDistance && deltaY <= saveDistance) {
+	        		return true;
+	        	}
+	        }
+		}
+		return false;
+	}
+	
+
+	
 	
 	//Проверить наличие платформы снизу на N шагов
 	public static boolean checkPlatforminNStepByBottom (ParamsBuilder globalParams, double n) {
@@ -173,7 +194,7 @@ public class Helper {
 				}
 			}
 		}
-		
+
 		return shoot;
 	}
 	
@@ -241,34 +262,5 @@ public class Helper {
 	    }
 	    return targenVision;
 	  }
-	
-//	private boolean isEnemySpotted(Game game, Unit unit, Unit enemy) {
-//	    boolean enemySpotted = true;
-//	    Vec2Double unitPosition = new Vec2Double(
-//	            unit.getPosition().getX(),
-//	            unit.getPosition().getY()+unit.getSize().getY()/2
-//	    );
-//	    Vec2Double enemyPosition = new Vec2Double(
-//	            enemy.getPosition().getX(),
-//	            enemy.getPosition().getY()+enemy.getSize().getY()/2
-//	    );
-//	    int k = (int) game.getProperties().getTicksPerSecond();
-//	    double deltaX = (unitPosition.getX()-enemyPosition.getX())/k;
-//	    double deltaY = (unitPosition.getY()-enemyPosition.getY())/k;
-//	    double positionX = unitPosition.getX();
-//	    double positionY = unitPosition.getY();
-//	    for (int i=0; i<k; i++) {
-//	      positionX-=deltaX;
-//	      positionY-=deltaY;
-//	      int tileX = (int) positionX;
-//	      int tileY = (int) positionY;
-//	      Tile tile = game.getLevel().getTiles()[tileX][tileY];
-//	      if (tile == Tile.WALL) {
-//	        enemySpotted = false;
-//	        break;
-//	      }
-//	    }
-//	    return enemySpotted;
-//	  }
 }
 	
