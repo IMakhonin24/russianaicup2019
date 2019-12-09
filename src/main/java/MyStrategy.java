@@ -2,6 +2,7 @@ import behavior.*;
 import behavior.attack.*;
 import behavior.defence.*;
 import behavior.other.*;
+import debug.Debug;
 import model.*;
 import strategy.*;
 import сontroller.*;
