@@ -103,12 +103,12 @@ public class MyStrategy {
 		
 		
 		
-		double angl = Helper.angle_test(nearestEnemy,unit);
+//		double angl = Helper.angle_test(nearestEnemy,unit);
 		//Надпись test_angle
-		String test_title = "Angle: " + angl;
+//		String test_title = "Angle: " + angl;
 		ColorFloat color_test = Color.GREEN;
-		debug.draw(new CustomData.PlacedText(test_title, Coordinate.toV2F(unit.getPosition(), 0, +5), TextAlignment.CENTER, 25f, color_test));
-		debug.draw(new CustomData.Line(Coordinate.toV2F(nearestEnemy.getPosition(),0,unit.getSize().getY()/2),Coordinate.toV2F(unit.getPosition(),0,unit.getSize().getY()/2),0.1f,color_test ) );
+//		debug.draw(new CustomData.PlacedText(test_title, Coordinate.toV2F(unit.getPosition(), 0, +5), TextAlignment.CENTER, 25f, color_test));
+//		debug.draw(new CustomData.Line(Coordinate.toV2F(nearestEnemy.getPosition(),0,unit.getSize().getY()/2),Coordinate.toV2F(unit.getPosition(),0,unit.getSize().getY()/2),0.1f,color_test ) );
 
 		
 		

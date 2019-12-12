@@ -24,32 +24,35 @@ public class Attack_default implements Behavior{
 		
 		double velocity = getVelocity();
 		action.setVelocity(velocity);
-		
+	
 		boolean jump = strategy.Helper.getDefaultJump(globalParams, targetPosition);
 		jump = false;
-	    action.setJump(jump);
-	    
 	    boolean jumpDown = !jump;
-	    action.setJumpDown(jumpDown);
-	    
 	    Vec2Double aim = strategy.Helper.getDefaultAim(globalParams);
-	    action.setAim(aim);
-	    
 	    boolean shoot = strategy.Helper.getDefaultShoot(globalParams, targetPosition);
-	    action.setShoot(shoot);
-	    
 	    boolean reload = strategy.Helper.getDefaultReload(globalParams, targetPosition);
-	    action.setReload(reload);
-	    
 	    boolean swapWeapon = false;
-	    action.setSwapWeapon(swapWeapon);
-	    
 	    boolean plantMine = false;
 		if(unit.getMines() > 0) {
 			plantMine = true;
 		}
+				
+		MissBullet missBullet = new MissBullet(globalParams);
+		int bulletMissStrategy = missBullet.getBulletMissStrategy();
+		
+
+		if(bulletMissStrategy == MissBullet.ACTION_JUMP) {
+			jump = true;
+		}
+
+		action.setJump(jump);
+		action.setJumpDown(jumpDown);
+		action.setAim(aim);
+		action.setShoot(shoot);
+	    action.setReload(reload);
+		action.setSwapWeapon(swapWeapon);
 	    action.setPlantMine(plantMine);
-	    
+
 		return action;
 	}
 	
@@ -83,7 +86,6 @@ public class Attack_default implements Behavior{
 			velocity = velocity * -1;
 		}
 
-		int bulletMissStrategy = Helper.analizeBulletsMiss(globalParams);
 		
 		globalParams.setVelocity(velocity);
 		return velocity;
