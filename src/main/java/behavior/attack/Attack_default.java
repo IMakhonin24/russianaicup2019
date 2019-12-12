@@ -4,20 +4,22 @@ import behavior.*;
 import model.*;
 import strategy.*;
 
-public class Attack_default implements Behavior{
-
+public class Attack_default implements Behavior
+{
 	private String behaviorName = "Стандартная атака";
 
 	private ParamsBuilder globalParams;
 	private UnitAction action;
 	private Vec2Double targetPosition;
 	
-	public Attack_default(ParamsBuilder globalParams) {
+	public Attack_default(ParamsBuilder globalParams)
+	{
 		this.globalParams = globalParams;
 		action = new UnitAction();
 	}	
 	
-	public UnitAction buildAction() {
+	public UnitAction buildAction()
+	{
 		Unit unit = globalParams.getUnit();
 		
 		targetPosition = Helper.getDistanceForPosition(globalParams, 10.0);
@@ -38,9 +40,8 @@ public class Attack_default implements Behavior{
 		}
 				
 		MissBullet missBullet = new MissBullet(globalParams);
-		int bulletMissStrategy = missBullet.getBulletMissStrategy();
+		int bulletMissStrategy = missBullet.getBulletMissStrategy();	
 		
-
 		if(bulletMissStrategy == MissBullet.ACTION_JUMP) {
 			jump = true;
 		}
@@ -56,7 +57,8 @@ public class Attack_default implements Behavior{
 		return action;
 	}
 	
-	private double getVelocity() {
+	private double getVelocity()
+	{
 		Unit unit = globalParams.getUnit();
 		double velocity = 0;
 		
@@ -91,7 +93,8 @@ public class Attack_default implements Behavior{
 		return velocity;
 	}
 	
-	public String getBehaviorName() {
+	public String getBehaviorName()
+	{
 		return behaviorName;
 	}
 }

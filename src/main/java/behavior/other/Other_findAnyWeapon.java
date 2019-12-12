@@ -23,28 +23,24 @@ public class Other_findAnyWeapon implements Behavior{
 		LootBoxController lootBoxController = globalParams.getLootBoxController();
 		targetPosition = lootBoxController.getNearestWeapon().getPosition();
 		
-		double velocity = strategy.Helper.getDefaultVelocity(globalParams, targetPosition);
-		action.setVelocity(velocity);
 		
+		double velocity = strategy.Helper.getDefaultVelocity(globalParams, targetPosition);
 		boolean jump = strategy.Helper.getDefaultJump(globalParams, targetPosition);
-	    action.setJump(jump);
-	    
 	    boolean jumpDown = !jump;
-	    action.setJumpDown(jumpDown);
-	    
 	    Vec2Double aim = strategy.Helper.getDefaultAim(globalParams);
-	    action.setAim(aim);
-	    
 	    boolean shoot = false;
-	    action.setShoot(shoot);
-	    
 	    boolean reload = false;
-	    action.setReload(reload);
-	    
 	    boolean swapWeapon = false;
-	    action.setSwapWeapon(swapWeapon);
-	    
 	    boolean plantMine = false;
+
+	    
+	    action.setVelocity(velocity);
+	    action.setJump(jump);
+	    action.setJumpDown(jumpDown);
+	    action.setAim(aim);
+	    action.setShoot(shoot);
+	    action.setReload(reload);
+	    action.setSwapWeapon(swapWeapon);
 	    action.setPlantMine(plantMine);
 	    
 		return action;

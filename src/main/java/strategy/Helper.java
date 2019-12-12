@@ -197,7 +197,6 @@ public class Helper {
 			}
 		}
 
-		shoot = false;
 		return shoot;
 	}
 	
