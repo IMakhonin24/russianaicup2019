@@ -6,7 +6,7 @@ import strategy.*;
 
 public class Attack_default implements Behavior{
 
-	private final String behaviorName = "Стандартная атака";
+	private String behaviorName = "Стандартная атака";
 
 	private Vec2Double targetPosition;
 	private ParamsBuilder globalParams;
@@ -21,7 +21,37 @@ public class Attack_default implements Behavior{
 	}
 	
 	public double getVelocity() {
-		double velocity = strategy.Helper.getDefaultVelocity(globalParams, targetPosition);
+		Unit unit = globalParams.getUnit();
+		double velocity = 0;
+		
+		double deltaX = Math.abs(targetPosition.getX() - unit.getPosition().getX());
+		
+		double distanceMax = 15;
+		double distanceMin = 10;
+
+		if(unit.getWeapon().getTyp().equals(WeaponType.PISTOL)) {
+			this.behaviorName = "Нападение с пистолетом";
+			distanceMax = 20;
+			distanceMin = 15;
+		} else if(unit.getWeapon().getTyp().equals(WeaponType.ASSAULT_RIFLE)){
+			this.behaviorName = "Нападение с винтовкой";
+			distanceMax = 12;
+			distanceMin = 5;
+		} else if(unit.getWeapon().getTyp().equals(WeaponType.ROCKET_LAUNCHER)) {
+			this.behaviorName = "Нападение с базукой";
+			distanceMax = 20;
+			distanceMin = 15;
+		}
+		
+		if(deltaX > distanceMax) {
+			velocity = strategy.Helper.getDefaultVelocity(globalParams, targetPosition);
+		} else if ( deltaX < distanceMin ) {
+			velocity = strategy.Helper.getDefaultVelocity(globalParams, targetPosition);
+			velocity = velocity * -1;
+		}
+
+		int bulleMissStrategy = Helper.analizeBulletsMiss(globalParams);
+		
 		globalParams.setVelocity(velocity);
 		return velocity;
 	}
@@ -34,6 +64,7 @@ public class Attack_default implements Behavior{
 
 	public boolean getJump() {
 		boolean jump = strategy.Helper.getDefaultJump(globalParams, targetPosition);
+		jump = false;
 		globalParams.setJump(jump);
 		return jump;
 	}

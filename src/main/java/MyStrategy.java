@@ -1,3 +1,10 @@
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
+
 import behavior.*;
 import behavior.attack.*;
 import behavior.defence.*;
@@ -12,8 +19,33 @@ public class MyStrategy {
 	
 	public UnitAction getAction(Unit unit, Game game, Debug debug) {
 				
+		double uPX = unit.getPosition().getX();
+		double uPY = unit.getPosition().getY();
+		double uSX = unit.getSize().getX()/2;
+		double uSY = unit.getSize().getY();
+		double pogr = 0;
+
+		Vec2Double uPA = new Vec2Double(uPX-uSX-pogr, uPY-pogr);
+		Vec2Double uPB = new Vec2Double(uPX-uSX-pogr, uPY+uSY+pogr);
+		Vec2Double uPC = new Vec2Double(uPX+uSX+pogr, uPY+uSY+pogr);
+		Vec2Double uPD = new Vec2Double(uPX+uSX+pogr, uPY-pogr);
+
 		
-		ParamsBuilder globalParams = new ParamsBuilder(unit, game);
+		debug.draw(new CustomData.Line(new Vec2Float((float) uPA.getX(), (float) uPA.getY()),new Vec2Float((float) uPB.getX(), (float) uPB.getY()),0.1f,new ColorFloat(0.255f, 0.0f, 0.0f, 1f) ) );
+		debug.draw(new CustomData.Line(new Vec2Float((float) uPB.getX(), (float) uPB.getY()),new Vec2Float((float) uPC.getX(), (float) uPC.getY()),0.1f,new ColorFloat(0.255f, 0.0f, 0.0f, 1f) ) );
+		debug.draw(new CustomData.Line(new Vec2Float((float) uPC.getX(), (float) uPC.getY()),new Vec2Float((float) uPD.getX(), (float) uPD.getY()),0.1f,new ColorFloat(0.255f, 0.0f, 0.0f, 1f) ) );
+		debug.draw(new CustomData.Line(new Vec2Float((float) uPD.getX(), (float) uPD.getY()),new Vec2Float((float) uPA.getX(), (float) uPA.getY()),0.1f,new ColorFloat(0.255f, 0.0f, 0.0f, 1f) ) );
+
+		
+		//Оси координат
+		debug.draw(new CustomData.Line(new Vec2Float((float) 0, (float) 0),new Vec2Float((float) 40, (float) 0),0.1f, Color.GREEN ) );
+		debug.draw(new CustomData.Line(new Vec2Float((float) 0, (float) 0),new Vec2Float((float) 0, (float) 40),0.1f, Color.ORANGE ) );
+
+		
+		     
+		
+		
+		ParamsBuilder globalParams = new ParamsBuilder(unit, game, debug);
 		
 		
 		//---------------------GAME-----------------------
@@ -46,9 +78,8 @@ public class MyStrategy {
 					
 		Behavior behavior = new Empty(globalParams);
 		if( nearestEnemy != null ) {
-			behavior = new Attack_default(globalParams);
+			behavior = new Attack_default(globalParams);			
 		}
-		
 		if( nearestHealthPack != null && unit.getHealth() <= Helper.criticalHeath ) {
 			behavior = new Defence_healing(globalParams);
 		}
@@ -70,66 +101,38 @@ public class MyStrategy {
 		debug.draw(new CustomData.Line(
 	      new Vec2Float((float) unit.getPosition().getX(), (float) unit.getPosition().getY()),
 	      new Vec2Float((float) targetP.getX(), (float) targetP.getY()),
-	      0.1f,
+	      0.05f,
 	      new ColorFloat(0.255f, 0.0f, 0.0f, 1f) ) );
 		
 		//Aim vector
 		debug.draw(new CustomData.Line(
 			      new Vec2Float((float) unit.getPosition().getX(), (float) unit.getPosition().getY()),
 			      new Vec2Float((float) (aim.getX()+unit.getPosition().getX()), (float) (aim.getY()+unit.getPosition().getY())),
-			      0.1f,
+			      0.05f,
 			      new ColorFloat(0.255f, 0.255f, 0.0f, 1f) ) );
 		
-		Bullet[] arBullets = game.getBullets();
 		
-		for (Bullet someBullet : arBullets) {
-			if (someBullet.getPlayerId() == unit.getPlayerId()) continue;
-			
-			
-			Vec2Double bulletVelocity = someBullet.getVelocity();
-			
-			double x = game.getProperties().getUnitSize().getX();
-			double y = game.getProperties().getUnitSize().getY();			
-			
-			debug.draw(new CustomData.Line(
-				      new Vec2Float((float) nearestEnemy.getPosition().getX(), (float) (nearestEnemy.getPosition().getY()+(y/2))),
-				      new Vec2Float((float) (bulletVelocity.getX()+nearestEnemy.getPosition().getX()), (float) (bulletVelocity.getY()+	(nearestEnemy.getPosition().getY()+(y/2)))),
-				      0.1f,
-				      new ColorFloat(0.255f, 0.255f, 0.0f, 0.06f) ) );
-			
-		}
+		
+		double angl = Helper.angle_test(nearestEnemy,unit);
+		//Надпись test_angle
+		String test_title = "Angle: " + angl;
+		ColorFloat color_test = Color.GREEN;
+		debug.draw(new CustomData.PlacedText(test_title, Coordinate.toV2F(unit.getPosition(), 0, +5), TextAlignment.CENTER, 25f, color_test));
+		debug.draw(new CustomData.Line(Coordinate.toV2F(nearestEnemy.getPosition(),0,unit.getSize().getY()/2),Coordinate.toV2F(unit.getPosition(),0,unit.getSize().getY()/2),0.1f,color_test ) );
+
 		
 		
 		
 		
-		
-		UnitAction action = new BuildAction( behavior ).build();
-		
-		double velocity = globalParams.getVelocity();
-		
-		boolean testMine = false;
-		
-		for (Mine mine : game.getMines()) {
-	        double safeRadius = 1;
-        	double radius = mine.getExplosionParams().getRadius() + safeRadius;
-        	double deltaX = Math.abs(unit.getPosition().getX() - mine.getPosition().getX());
-        	double deltaY = Math.abs(unit.getPosition().getY() - mine.getPosition().getY());
-        	if (mine.getState()==MineState.TRIGGERED) {
-        		if (deltaX<=radius && deltaY<=radius) {
-        			testMine = true;
-        		}
-        	}
-		}
-		
-		if(testMine == true) {
-			debug.draw(new CustomData.Log("Mine: true"));
-		} else {
-			debug.draw(new CustomData.Log("Mine: false"));
-		}
-		
+
+		UnitAction action = new BuildAction( behavior ).build();		
 		
 		
 		return action;
   }
- 
+	
+	
+
+	
+	
 }

@@ -4,6 +4,7 @@ import behavior.*;
 import behavior.attack.*;
 import behavior.defence.*;
 import behavior.other.*;
+import debug.Debug;
 import model.*;
 import strategy.*;
 import сontroller.*;
@@ -12,6 +13,7 @@ public class ParamsBuilder {
 
 	protected Unit unit;
 	protected Game game;
+	protected Debug debug;
 	protected EnemyController enemyController;
 	protected LootBoxController lootBoxController;
 	protected GameController gameController;
@@ -25,9 +27,10 @@ public class ParamsBuilder {
 	private boolean swapWeapon;
     private boolean plantMine;	
     
-	public ParamsBuilder(Unit unit, Game game) {
+	public ParamsBuilder(Unit unit, Game game, Debug debug) {
 		this.unit = unit;
 		this.game = game;
+		this.debug = debug;
 	}
 
 	//---------------Setter block----------------
@@ -96,6 +99,10 @@ public class ParamsBuilder {
 
 	public Game getGame() {
 		return game;
+	}
+	
+	public Debug getDebug() {
+		return debug;
 	}
 
 	public EnemyController getEnemyController() {
