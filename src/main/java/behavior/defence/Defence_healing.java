@@ -9,66 +9,45 @@ public class Defence_healing implements Behavior{
 
 	private final String behaviorName = "Хил";
 	
-	private Vec2Double targetPosition;
-
 	private ParamsBuilder globalParams;
+	private UnitAction action;
+	private Vec2Double targetPosition;
 	
 	public Defence_healing(ParamsBuilder globalParams) {
 		this.globalParams = globalParams;
-		this.setTarget();
+		action = new UnitAction();
 	}	
 	
-	public void setTarget() {
+	public UnitAction buildAction() {
+		
 		LootBoxController lootBoxController = globalParams.getLootBoxController();
-		this.targetPosition = lootBoxController.getNearestHealthPack().getPosition();
-	}
-	
-	public double getVelocity() {
+		targetPosition = lootBoxController.getNearestHealthPack().getPosition();
+		
 		double velocity = strategy.Helper.getDefaultVelocity(globalParams, targetPosition);
-		globalParams.setVelocity(velocity);
-		return velocity;
-	}
-
-	public Vec2Double getAim() {
-		Vec2Double aim = strategy.Helper.getDefaultAim(globalParams);
-		globalParams.setAim(aim);
-		return aim;
-	}
-
-	public boolean getJump() {
+		action.setVelocity(velocity);
+		
 		boolean jump = strategy.Helper.getDefaultJump(globalParams, targetPosition);
-		globalParams.setJump(jump);
-		return jump;
-	}
-
-	public boolean getJumpDown() {
-		boolean jumpDown = !globalParams.getJump();
-		globalParams.setJumpDown(jumpDown);
-		return jumpDown;
-	}
-
-	public boolean getShoot() {
-		boolean shoot = strategy.Helper.getDefaultShoot(globalParams, targetPosition);
-		globalParams.setShoot(shoot);
-		return shoot;
-	}
-
-	public boolean getSwapWeapon() {
-		boolean swapWeapon = false;
-		globalParams.setSwapWeapon(swapWeapon);
-		return swapWeapon;
-	}
-	
-	public boolean getReload() {
-		boolean reload = strategy.Helper.getDefaultReload(globalParams, targetPosition);
-		globalParams.setReload(reload);
-		return reload;
-	}
-
-	public boolean getPlantMine() {
-		boolean plantMine = false;
-		globalParams.setPlantMine(plantMine);
-		return plantMine;
+	    action.setJump(jump);
+	    
+	    boolean jumpDown = !jump;
+	    action.setJumpDown(jumpDown);
+	    
+	    Vec2Double aim = strategy.Helper.getDefaultAim(globalParams);
+	    action.setAim(aim);
+	    
+	    boolean shoot = strategy.Helper.getDefaultShoot(globalParams, targetPosition);
+	    action.setShoot(shoot);
+	    
+	    boolean reload = strategy.Helper.getDefaultReload(globalParams, targetPosition);
+	    action.setReload(reload);
+	    
+	    boolean swapWeapon = false;
+	    action.setSwapWeapon(swapWeapon);
+	    
+	    boolean plantMine = false;
+	    action.setPlantMine(plantMine);
+	    
+		return action;
 	}
 	
 	public String getBehaviorName() {

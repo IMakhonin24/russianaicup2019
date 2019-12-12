@@ -42,11 +42,9 @@ public class MyStrategy {
 		debug.draw(new CustomData.Line(new Vec2Float((float) 0, (float) 0),new Vec2Float((float) 0, (float) 40),0.1f, Color.ORANGE ) );
 
 		
-		     
-		
+		//==============================Start======================
 		
 		ParamsBuilder globalParams = new ParamsBuilder(unit, game, debug);
-		
 		
 		//---------------------GAME-----------------------
 		GameController gameController = new GameController(globalParams);
@@ -58,15 +56,7 @@ public class MyStrategy {
 		Unit nearestEnemy = enemyController.getNearestEnemy();	
 		globalParams.setEnemyController(enemyController);
 		//---------------------ENEMY-----------------------		
-		
-		if(unit.getWeapon() != null) {
-			int magazine = unit.getWeapon().getMagazine();
-			debug.draw(new CustomData.Log("magazine: " + magazine));
-		}
-		
-		
-		
-  
+			
 		//---------------------LOOT-----------------------
 		LootBoxController lootBoxController = new LootBoxController(globalParams);
 		globalParams.setLootBoxController(lootBoxController);
@@ -92,24 +82,24 @@ public class MyStrategy {
 		
 		
 		
-		debug.draw(new CustomData.Log("Current behavior: " + behavior.getBehaviorName()));
 		
-		Vec2Double targetP = behavior.getTargetPosition();
-		Vec2Double aim = behavior.getAim();
 		
-		//Target vector
-		debug.draw(new CustomData.Line(
-	      new Vec2Float((float) unit.getPosition().getX(), (float) unit.getPosition().getY()),
-	      new Vec2Float((float) targetP.getX(), (float) targetP.getY()),
-	      0.05f,
-	      new ColorFloat(0.255f, 0.0f, 0.0f, 1f) ) );
+//		Vec2Double targetP = behavior.getTargetPosition();
+//		Vec2Double aim = behavior.getAim();
 		
-		//Aim vector
-		debug.draw(new CustomData.Line(
-			      new Vec2Float((float) unit.getPosition().getX(), (float) unit.getPosition().getY()),
-			      new Vec2Float((float) (aim.getX()+unit.getPosition().getX()), (float) (aim.getY()+unit.getPosition().getY())),
-			      0.05f,
-			      new ColorFloat(0.255f, 0.255f, 0.0f, 1f) ) );
+//		//Target vector
+//		debug.draw(new CustomData.Line(
+//	      new Vec2Float((float) unit.getPosition().getX(), (float) unit.getPosition().getY()),
+//	      new Vec2Float((float) targetP.getX(), (float) targetP.getY()),
+//	      0.05f,
+//	      new ColorFloat(0.255f, 0.0f, 0.0f, 1f) ) );
+//		
+//		//Aim vector
+//		debug.draw(new CustomData.Line(
+//			      new Vec2Float((float) unit.getPosition().getX(), (float) unit.getPosition().getY()),
+//			      new Vec2Float((float) (aim.getX()+unit.getPosition().getX()), (float) (aim.getY()+unit.getPosition().getY())),
+//			      0.05f,
+//			      new ColorFloat(0.255f, 0.255f, 0.0f, 1f) ) );
 		
 		
 		
@@ -123,11 +113,8 @@ public class MyStrategy {
 		
 		
 		
-		
-
+		debug.draw(new CustomData.Log("Current behavior: " + behavior.getBehaviorName()));
 		UnitAction action = new BuildAction( behavior ).build();		
-		
-		
 		return action;
   }
 	

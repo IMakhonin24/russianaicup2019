@@ -1,12 +1,7 @@
 package strategy;
 
-import behavior.*;
-import behavior.attack.*;
-import behavior.defence.*;
-import behavior.other.*;
 import debug.Debug;
 import model.*;
-import strategy.*;
 import сontroller.*;
 
 public class ParamsBuilder {
@@ -117,36 +112,5 @@ public class ParamsBuilder {
 		return gameController;
 	}
 	
-	public double getVelocity() { 
-		return velocity; 
-	}
-	
-    public boolean getJump() { 
-    	return jump;
-	}
-    
-    public boolean getJumpDown() { 
-    	return jumpDown;
-	}
-
-    public Vec2Double getAim() { 
-    	return aim;
-    }
-    
-    public boolean getShoot() { 
-    	return shoot;
-    }
-    
-    public boolean getReload() {
-    	return reload;
-    }
-    
-    public boolean getSwapWeapon() {
-    	return swapWeapon;
-    }
-    
-    public boolean getPlantMine() {
-    	return plantMine;
-    }
     
 }

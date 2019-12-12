@@ -46,7 +46,6 @@ public class Helper {
 	public static boolean getDefaultJump(ParamsBuilder globalParams, Vec2Double targetPosition) {
 		Game game = globalParams.getGame();
 		Unit unit = globalParams.getUnit();
-		double velocity = globalParams.getVelocity();
 		
 		boolean jump = getDitectionForY(globalParams, targetPosition) == 3 ;
 		

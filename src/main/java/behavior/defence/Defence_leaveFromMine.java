@@ -4,76 +4,55 @@ package behavior.defence;
 import behavior.*;
 import model.*;
 import strategy.*;
-import сontroller.*;
 
 public class Defence_leaveFromMine implements Behavior{
 
 	private final String behaviorName = "Убежать от мины";
 	
-	private Vec2Double targetPosition;
-
 	private ParamsBuilder globalParams;
+	private UnitAction action;
+	private Vec2Double targetPosition;
 	
 	public Defence_leaveFromMine(ParamsBuilder globalParams) {
 		this.globalParams = globalParams;
-		this.setTarget();
+		action = new UnitAction();
 	}	
 	
-	public void setTarget() {
+	public UnitAction buildAction() {
+		
 		Mine nearestPlantMine = globalParams.getGameController().getNearestPlantMine();
 		if(Helper.getDitectionForX(globalParams, nearestPlantMine.getPosition()) == 3) {
-			this.targetPosition = new Vec2Double(nearestPlantMine.getPosition().getX() - 5, nearestPlantMine.getPosition().getY());
+			targetPosition = new Vec2Double(nearestPlantMine.getPosition().getX() - 5, nearestPlantMine.getPosition().getY());
 		}else {
-			this.targetPosition = new Vec2Double(nearestPlantMine.getPosition().getX() + 5, nearestPlantMine.getPosition().getY());
+			targetPosition = new Vec2Double(nearestPlantMine.getPosition().getX() + 5, nearestPlantMine.getPosition().getY());
 		}
-	}
-	
-	public double getVelocity() {
+		
 		double velocity = strategy.Helper.getDefaultVelocity(globalParams, targetPosition);
-		globalParams.setVelocity(velocity);
-		return velocity;
-	}
-
-	public Vec2Double getAim() {
-		Vec2Double aim = strategy.Helper.getDefaultAim(globalParams);
-		globalParams.setAim(aim);
-		return aim;
-	}
-
-	public boolean getJump() {
+		action.setVelocity(velocity);
+		
 		boolean jump = true;
-		globalParams.setJump(jump);
-		return jump;
-	}
-
-	public boolean getJumpDown() {
-		boolean jumpDown = !globalParams.getJump();
-		globalParams.setJumpDown(jumpDown);
-		return jumpDown;
-	}
-
-	public boolean getShoot() {
-		boolean shoot = strategy.Helper.getDefaultShoot(globalParams, targetPosition);
-		globalParams.setShoot(shoot);
-		return shoot;
-	}
-
-	public boolean getSwapWeapon() {
-		boolean swapWeapon = false;
-		globalParams.setSwapWeapon(swapWeapon);
-		return swapWeapon;
-	}
-	
-	public boolean getReload() {
-		boolean reload = strategy.Helper.getDefaultReload(globalParams, targetPosition);
-		globalParams.setReload(reload);
-		return reload;
-	}
-
-	public boolean getPlantMine() {
-		boolean plantMine = false;
-		globalParams.setPlantMine(plantMine);
-		return plantMine;
+	    action.setJump(jump);
+	    
+	    boolean jumpDown = !jump;
+	    action.setJumpDown(jumpDown);
+	    
+	    
+	    Vec2Double aim = strategy.Helper.getDefaultAim(globalParams);
+	    action.setAim(aim);
+	    
+	    boolean shoot = strategy.Helper.getDefaultShoot(globalParams, targetPosition);
+	    action.setShoot(shoot);
+	    
+	    boolean reload = strategy.Helper.getDefaultReload(globalParams, targetPosition);;
+	    action.setReload(reload);
+	    
+	    boolean swapWeapon = false;
+	    action.setSwapWeapon(swapWeapon);
+	    
+	    boolean plantMine = false;
+	    action.setPlantMine(plantMine);
+	    
+		return action;
 	}
 	
 	public String getBehaviorName() {
