@@ -5,15 +5,15 @@ import debug.*;
 import model.*;
 import strategy.*;
 
-public class Attack_default implements Behavior
+public class Attack_pistol implements Behavior
 {
-	private String behaviorName = "Стандартная атака";
+	private String behaviorName = "Атака с пистолетом";
 
 	private ParamsBuilder globalParams;
 	private UnitAction action;
 	private Vec2Double targetPosition;
 	
-	public Attack_default(ParamsBuilder globalParams)
+	public Attack_pistol(ParamsBuilder globalParams)
 	{
 		this.globalParams = globalParams;
 		action = new UnitAction();
@@ -64,12 +64,13 @@ public class Attack_default implements Behavior
 	private double getVelocity()
 	{
 		Unit unit = globalParams.getUnit();
+		Debug debug = globalParams.getDebug();
 		double velocity = 0;
 		
 		double deltaX = Math.abs(targetPosition.getX() - unit.getPosition().getX());
-		
-		double distanceMax = 15;
-		double distanceMin = 10;
+
+		double distanceMax = 30;
+		double distanceMin = 15;
 		if( !Helper.isUnitVision(globalParams, globalParams.getEnemyController().getNearestEnemy()) ) {
 			double distanceDelta = Math.abs(distanceMax-deltaX);
 			distanceMax = distanceMax - distanceDelta - 1;
@@ -81,8 +82,7 @@ public class Attack_default implements Behavior
 			velocity = strategy.Helper.getDefaultVelocity(globalParams, targetPosition);
 			velocity = velocity * -1;
 		}
-
-		
+	
 		globalParams.setVelocity(velocity);
 		return velocity;
 	}

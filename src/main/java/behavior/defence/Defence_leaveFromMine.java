@@ -55,10 +55,4 @@ public class Defence_leaveFromMine implements Behavior
 	{
 		return behaviorName;
 	}
-	
-	public Vec2Double getTargetPosition()
-	{
-		return targetPosition;
-	}
-
 }

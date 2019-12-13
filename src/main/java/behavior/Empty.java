@@ -51,5 +51,4 @@ public class Empty implements Behavior{
 	public String getBehaviorName() {
 		return behaviorName;
 	}
-
 }

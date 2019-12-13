@@ -71,6 +71,18 @@ public class LootBoxController {
 	public LootBox getNearestWeapon() {
 		return nearestWeapon;
 	}
+	
+	public LootBox getNearestPistol() {
+		return nearestPistol;
+	}
+	
+	public LootBox getNearestAR() {
+		return nearestAssaultRifle;
+	}
+	
+	public LootBox getNearestRL() {
+		return nearestRocketLauncher;
+	}
 
 	public LootBox getNearestMine() {
 		return nearestMine;

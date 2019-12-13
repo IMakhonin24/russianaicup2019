@@ -49,9 +49,4 @@ public class Other_findAnyWeapon implements Behavior{
 	public String getBehaviorName() {
 		return behaviorName;
 	}
-	
-	public Vec2Double getTargetPosition() {
-		return targetPosition;
-	}
-	
 }
