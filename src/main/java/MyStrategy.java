@@ -19,24 +19,6 @@ public class MyStrategy {
 	
 	public UnitAction getAction(Unit unit, Game game, Debug debug) {
 				
-		double uPX = unit.getPosition().getX();
-		double uPY = unit.getPosition().getY();
-		double uSX = unit.getSize().getX()/2;
-		double uSY = unit.getSize().getY();
-		double pogr = 0;
-
-		Vec2Double uPA = new Vec2Double(uPX-uSX-pogr, uPY-pogr);
-		Vec2Double uPB = new Vec2Double(uPX-uSX-pogr, uPY+uSY+pogr);
-		Vec2Double uPC = new Vec2Double(uPX+uSX+pogr, uPY+uSY+pogr);
-		Vec2Double uPD = new Vec2Double(uPX+uSX+pogr, uPY-pogr);
-
-		
-		debug.draw(new CustomData.Line(new Vec2Float((float) uPA.getX(), (float) uPA.getY()),new Vec2Float((float) uPB.getX(), (float) uPB.getY()),0.1f,new ColorFloat(0.255f, 0.0f, 0.0f, 1f) ) );
-		debug.draw(new CustomData.Line(new Vec2Float((float) uPB.getX(), (float) uPB.getY()),new Vec2Float((float) uPC.getX(), (float) uPC.getY()),0.1f,new ColorFloat(0.255f, 0.0f, 0.0f, 1f) ) );
-		debug.draw(new CustomData.Line(new Vec2Float((float) uPC.getX(), (float) uPC.getY()),new Vec2Float((float) uPD.getX(), (float) uPD.getY()),0.1f,new ColorFloat(0.255f, 0.0f, 0.0f, 1f) ) );
-		debug.draw(new CustomData.Line(new Vec2Float((float) uPD.getX(), (float) uPD.getY()),new Vec2Float((float) uPA.getX(), (float) uPA.getY()),0.1f,new ColorFloat(0.255f, 0.0f, 0.0f, 1f) ) );
-
-		
 		//Оси координат
 		debug.draw(new CustomData.Line(new Vec2Float((float) 0, (float) 0),new Vec2Float((float) 40, (float) 0),0.1f, Color.GREEN ) );
 		debug.draw(new CustomData.Line(new Vec2Float((float) 0, (float) 0),new Vec2Float((float) 0, (float) 40),0.1f, Color.ORANGE ) );

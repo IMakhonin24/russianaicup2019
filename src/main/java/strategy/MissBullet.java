@@ -44,14 +44,15 @@ public class MissBullet {
 		double unitPosX = unit.getPosition().getX();
 		double unitPosY = unit.getPosition().getY();
 		double unitSizeY = unit.getSize().getY();
-		double deviation = unitSizeY/2;	
+		double deviationTop = unitSizeY/5;	
+		double deviationDown = unitSizeY/2;	
 
-		Vec2Double testp1 = new Vec2Double(unitPosX, unitPosY-deviation);
-		Vec2Double testp2= new Vec2Double(unitPosX, unitPosY+unitSizeY+deviation);
+		Vec2Double pointTop = new Vec2Double(unitPosX, unitPosY-deviationDown);
+		Vec2Double pointBottom= new Vec2Double(unitPosX, unitPosY+unitSizeY+deviationTop);
 
-		debug.draw(new CustomData.Line(Coordinate.toV2F(testp1),Coordinate.toV2F(testp2),0.1f,Color.YELLOW ) );
+		debug.draw(new CustomData.Line(Coordinate.toV2F(pointBottom),Coordinate.toV2F(pointTop),0.1f,Color.YELLOW ) );
 
-		return new UnitSaveWrapper(unitPosX, unitPosY-deviation, unitPosX, unitPosY+unitSizeY+deviation );
+		return new UnitSaveWrapper(unitPosX, unitPosY-deviationDown, unitPosX, unitPosY+unitSizeY+deviationTop );
 		
 	}
 	

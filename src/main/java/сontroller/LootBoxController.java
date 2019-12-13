@@ -4,6 +4,7 @@ import model.Game;
 import model.Item;
 import model.LootBox;
 import model.Unit;
+import model.WeaponType;
 import strategy.Helper;
 import strategy.ParamsBuilder;
 
@@ -13,6 +14,9 @@ public class LootBoxController {
 	
 	protected LootBox nearestHealthPack = null;
 	protected LootBox nearestWeapon = null;
+	protected LootBox nearestPistol = null;
+	protected LootBox nearestAssaultRifle = null;
+	protected LootBox nearestRocketLauncher = null;
 	protected LootBox nearestMine = null;
 	
 	public LootBoxController(ParamsBuilder globalParams) {
@@ -31,6 +35,24 @@ public class LootBoxController {
 					nearestHealthPack = lootBox;
 		        }
 			} else if (lootBox.getItem() instanceof Item.Weapon) {
+				Item.Weapon weapon = (Item.Weapon) lootBox.getItem();
+				switch (weapon.getWeaponType()) {
+				   case  PISTOL:
+					   if (nearestPistol == null || distanceToTargetLoot < Helper.distanceSqr(myUnit.getPosition(), nearestPistol.getPosition())) {
+						   nearestPistol = lootBox;
+					   }
+					   break;
+				   case ASSAULT_RIFLE:
+					   if (nearestAssaultRifle == null || distanceToTargetLoot < Helper.distanceSqr(myUnit.getPosition(), nearestAssaultRifle.getPosition())) {
+						   nearestAssaultRifle = lootBox;
+					   }
+				       break;
+				   case ROCKET_LAUNCHER:
+					   if (nearestRocketLauncher == null || distanceToTargetLoot < Helper.distanceSqr(myUnit.getPosition(), nearestRocketLauncher.getPosition())) {
+						   nearestRocketLauncher = lootBox;
+					   }
+				       break;
+				}
 				if (nearestWeapon == null || distanceToTargetLoot < Helper.distanceSqr(myUnit.getPosition(), nearestWeapon.getPosition())) {
 					nearestWeapon = lootBox;
 		        }

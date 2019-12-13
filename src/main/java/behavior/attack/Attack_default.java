@@ -28,8 +28,7 @@ public class Attack_default implements Behavior
 		action.setVelocity(velocity);
 	
 		boolean jump = strategy.Helper.getDefaultJump(globalParams, targetPosition);
-		jump = false;
-	    boolean jumpDown = !jump;
+		boolean jumpDown = !jump;
 	    Vec2Double aim = strategy.Helper.getDefaultAim(globalParams);
 	    boolean shoot = strategy.Helper.getDefaultShoot(globalParams, targetPosition);
 	    boolean reload = strategy.Helper.getDefaultReload(globalParams, targetPosition);
