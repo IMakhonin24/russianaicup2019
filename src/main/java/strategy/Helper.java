@@ -18,9 +18,19 @@ import сontroller.EnemyController;
 
 public class Helper {
 	
+	//Направления движения unit к target
+	public static final int DIRECTION_NONE = 0;
+	public static final int DIRECTION_LEFT = 1;
+	public static final int DIRECTION_RIGHT = 2;
+	public static final int DIRECTION_TOP = 3;
+	public static final int DIRECTION_DOWN = 4;
+	
 	
 	public static final double maxSpeed = 1000;
-	public static final int criticalHeath = 75;
+	
+	public static final int lowLevelHeath = 85;
+	public static final int criticalHeath = 50;
+	
 	
 	public static final int criticalMagazinePistol = 3;
 	public static final int criticalMagazineAssaultRifle = 7;
@@ -97,19 +107,50 @@ public class Helper {
 		return false;
 	}
 	
-	//Проверисть стену по оси X на N шагов
-	public static boolean checkWallinNStepByX (ParamsBuilder globalParams, Vec2Double targetPosition, double n) {
+	
+	//Проверит наличие тайла checkTile для unit через countStep шагов
+	public static boolean checkTileForUnitByStepN(Game game, Tile checkTile, Unit unit, Vec2Double target, double countStep) 
+	{
+		Tile[][] tileMatrix = game.getLevel().getTiles();
+		
+		double unitPositionX = unit.getPosition().getX();
+		double unitPositionY = unit.getPosition().getY();	
+		
+		int unitDirection = getUnitDirectionForX(unit, target);
+		double nextUnitPositionX = ( unitDirection == DIRECTION_RIGHT ) ? unitPositionX + countStep : unitPositionX - countStep; 
+
+		Tile findTile = getTileTypeByXY(tileMatrix, nextUnitPositionX, unitPositionY);
+		
+		if ( (unitDirection == DIRECTION_RIGHT) && (findTile == checkTile) ) {
+			return true;
+		}
+		
+		return false;
+	}
+	
+	
+	public static boolean checkWallinNStepByX (ParamsBuilder globalParams, Vec2Double targetPosition, double n) 
+	{
 		Game game = globalParams.getGame();
 		Unit unit = globalParams.getUnit();
-		if ( 
-				(getDitectionForX(globalParams, targetPosition) == 3 && game.getLevel().getTiles()[(int) (unit.getPosition().getX() + n)][(int) (unit.getPosition().getY())] == Tile.WALL) || 
-				(getDitectionForX(globalParams, targetPosition) == 2 && game.getLevel().getTiles()[(int) (unit.getPosition().getX() - n)][(int) (unit.getPosition().getY())] == Tile.WALL))
-		{
+		
+		double unitPositionX = unit.getPosition().getX();
+		double unitPositionY = unit.getPosition().getY();
+	
+		Tile[][] tileMatrix = game.getLevel().getTiles();
+		
+		int unitDirection = getUnitDirectionForX(unit, targetPosition);
+		double nextUnitPositionX = ( unitDirection == DIRECTION_RIGHT ) ? unitPositionX + n : unitPositionX - n; 
+		
+		Tile tile = getTileTypeByXY(tileMatrix, nextUnitPositionX, unitPositionY);
+		
+		if ( (unitDirection == DIRECTION_RIGHT) && (tile == Tile.WALL) ) {
 			return true;
 		}
 		return false;
 	}
 	
+	// Можно удалить. Есть аналог
 	// возвразает направление юнита по оси X
 	// 1 - target cлева
 	// 2 - target и unit на одной координате
@@ -125,6 +166,9 @@ public class Helper {
 		}
 	}
 	
+	
+	
+	// Можно удалить. Есть аналог
 	// возвразает направление юнита по оси Y
 	// 1 - unit двигается вниз
 	// 2 - unit достиг target
@@ -139,6 +183,21 @@ public class Helper {
 			return 2;
 		}
 	} 
+	
+	//Вернет направление движения unit к target по оси Y
+	public static int getUnitDirectionForY(Unit unit, Vec2Double target ) 
+	{
+		double unitPositionY = unit.getPosition().getY();
+		double targetPositionY = target.getY();
+		
+		if ( unitPositionY < targetPositionY ) {
+			return DIRECTION_TOP;
+		} else if (targetPositionY < unitPositionY){
+			return DIRECTION_DOWN;
+		} else {
+			return DIRECTION_NONE;
+		}
+	}
 	
 	
 	//Перезарядка
@@ -269,6 +328,57 @@ public class Helper {
 	    return targenVision;
 	  }
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//Вернет направление движения unit к target по оси X
+	public static int getUnitDirectionForX(Unit unit, Vec2Double target ) 
+	{		
+		return getDirectionByCoordinatesX(unit.getPosition(), target);
+	}
+		
+	//Вернет отношение по горизонтали point1 к point2
+	public static int getDirectionByCoordinatesX(Vec2Double point, Vec2Double pointTarget) 
+	{
+		double pointX = point.getX();
+		double pointTargetX = pointTarget.getX();
+		
+		if ( pointX < pointTargetX ) {
+			return DIRECTION_RIGHT;
+		} else if (pointTargetX < pointX){
+			return DIRECTION_LEFT;
+		} else {
+			return DIRECTION_NONE;
+		}
+	}
+		
+	//Вернет координату пола по Y с параметром по X
+	public static double findWallByX(Game game, double x) 
+	{
+		Tile[][] tileMatrix = game.getLevel().getTiles();
+		int tileX = (int) x;
+		for (int i = 0; i < tileMatrix[tileX].length; i++) {
+			Tile tile = tileMatrix[tileX][i];
+			if ( (tile==Tile.WALL) || (tile==Tile.PLATFORM) || (tile==Tile.LADDER) ) {
+				return i+1;
+			}
+		}		
+		return 0;
+	}
+	
+	//Вернет tile по указанным координатам
+	public static Tile getTileTypeByXY(Tile[][] tile, double x, double y) {	
+		return tile[ (int) x ][ (int) y ];
+	}
+	
 	//Проверит пересечение отрезков
 	public static boolean isIntersection( Vec2Double pointA, Vec2Double pointB, Vec2Double pointC, Vec2Double pointD ) 
 	{	

@@ -18,7 +18,7 @@ public class MyStrategy {
 	
 	
 	public UnitAction getAction(Unit unit, Game game, Debug debug) {
-				
+		
 		//Оси координат
 		debug.draw(new CustomData.Line(new Vec2Float((float) 0, (float) 0),new Vec2Float((float) 40, (float) 0),0.1f, Color.ORANGE ) );
 		debug.draw(new CustomData.Line(new Vec2Float((float) 0, (float) 0),new Vec2Float((float) 0, (float) 40),0.1f, Color.ORANGE ) );
@@ -58,7 +58,7 @@ public class MyStrategy {
 		}
 		if( nearestHealthPack != null && unit.getHealth() <= Helper.criticalHeath ) {
 			behavior = new Defence_healing(globalParams);
-		}
+		}	
 		if ( (unit.getWeapon() != null) && (unit.getWeapon().getTyp() != WeaponType.PISTOL) && (lootBoxController.getNearestPistol() != null) ) {
 			behavior = new Other_findPistol(globalParams);
 		}
@@ -79,6 +79,11 @@ public class MyStrategy {
 //			      0.05f,
 //			      new ColorFloat(0.255f, 0.255f, 0.0f, 1f) ) );
 		
+		
+		
+		
+		
+		//==============test===========
 		
 		
 		
