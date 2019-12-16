@@ -83,8 +83,8 @@ public class Defence_setPositionAroundHealthPack implements Behavior
 		Unit unit = globalParams.getUnit();
 		
 		Vec2Double unitPosition = unit.getPosition();
-		EnemyController enemyController = globalParams.getEnemyController();
-		Vec2Double nearestEnemyPosition = enemyController.getNearestEnemy().getPosition();
+		UnitController unitController = globalParams.getUnitController();
+		Vec2Double nearestEnemyPosition = unitController.getAnyEnemy().getPosition();
 		
 		
 		LootBoxController lootBoxController = globalParams.getLootBoxController();

@@ -4,18 +4,19 @@ import behavior.*;
 import debug.*;
 import model.*;
 import strategy.*;
-import сontroller.LootBoxController;
 import сontroller.UnitController;
 
-public class Attack_default implements Behavior
+public class Attack_AR implements Behavior
 {
-	private String behaviorName = "Стандартная атака";
+	private String behaviorName = "Атака с AR";
 
 	private ParamsBuilder globalParams;
 	private UnitAction action;
 	private Vec2Double targetPosition;
 	
-	public Attack_default(ParamsBuilder globalParams)
+	private double velocity;
+	
+	public Attack_AR(ParamsBuilder globalParams)
 	{
 		this.globalParams = globalParams;
 		action = new UnitAction();
@@ -25,13 +26,14 @@ public class Attack_default implements Behavior
 	{
 		Unit unit = globalParams.getUnit();
 		Debug debug = globalParams.getDebug();
+		Game game = globalParams.getGame();
 		
 		initTarget();
 		
-		double velocity = getVelocity();
+		velocity = getVelocity();
 		action.setVelocity(velocity);
 	
-		boolean jump = strategy.Helper.getDefaultJump(globalParams, targetPosition);
+		boolean jump = getJump();
 		boolean jumpDown = !jump;
 	    Vec2Double aim = strategy.Helper.getDefaultAim(globalParams);
 	    boolean shoot = strategy.Helper.getDefaultShoot(globalParams, targetPosition);
@@ -61,7 +63,7 @@ public class Attack_default implements Behavior
 	}
 	
 	private void initTarget() 
-	{	
+	{			
 		UnitController unitController = globalParams.getUnitController();
 		targetPosition = unitController.getAnyEnemy().getPosition();
 		Helper.debugDrawTarget(globalParams, targetPosition);
@@ -70,13 +72,12 @@ public class Attack_default implements Behavior
 	private double getVelocity()
 	{
 		Unit unit = globalParams.getUnit();
-		
 		double velocity = 0;
 		
 		double deltaX = Math.abs(targetPosition.getX() - unit.getPosition().getX());
-		
-		double distanceMax = 15;
-		double distanceMin = 10;
+
+		double distanceMax = 30;
+		double distanceMin = 15;
 		if( !Helper.isUnitVision(globalParams, globalParams.getUnitController().getAnyEnemy()) ) {
 			double distanceDelta = Math.abs(distanceMax-deltaX);
 			distanceMax = distanceMax - distanceDelta - 1;
@@ -88,8 +89,38 @@ public class Attack_default implements Behavior
 			velocity = strategy.Helper.getDefaultVelocity(globalParams, targetPosition);
 			velocity = velocity * -1;
 		}
-
+	
 		return velocity;
+	}
+	
+	private boolean getJump() 
+	{
+		boolean jump = false;
+		Unit unit = globalParams.getUnit();
+		Game game = globalParams.getGame();
+		int unitDirection = Helper.getUnitDirectionForY( unit, targetPosition );
+		
+		if (unitDirection == Helper.DIRECTION_TOP) {
+			jump = true;
+		}
+		
+		
+		if (targetPosition.getX() > unit.getPosition().getX() && game.getLevel()
+	        .getTiles()[(int) (unit.getPosition().getX() + 1)][(int) (unit.getPosition().getY())] == Tile.WALL) {
+	      jump = true;
+	    }
+	    if (targetPosition.getX() < unit.getPosition().getX() && game.getLevel()
+	        .getTiles()[(int) (unit.getPosition().getX() - 1)][(int) (unit.getPosition().getY())] == Tile.WALL) {
+	      jump = true;
+	    }
+		    
+//		if(Helper.checkTileForUnitByStepN(game, Tile.WALL, unit, targetPosition, 1)) {
+//			jump = true;
+//		}else if(velocity == 0) {
+//			jump = false;
+//		}
+
+	    return jump;
 	}
 	
 	public String getBehaviorName()

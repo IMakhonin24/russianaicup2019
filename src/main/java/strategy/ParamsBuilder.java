@@ -9,7 +9,7 @@ public class ParamsBuilder {
 	protected Unit unit;
 	protected Game game;
 	protected Debug debug;
-	protected EnemyController enemyController;
+	protected UnitController unitController;
 	protected LootBoxController lootBoxController;
 	protected GameController gameController;
 	
@@ -29,12 +29,6 @@ public class ParamsBuilder {
 	}
 
 	//---------------Setter block----------------
-	
-	public ParamsBuilder setEnemyController(EnemyController enemyController) {
-		this.enemyController = enemyController;
-		return this;
-	}
-	
 	public ParamsBuilder setLootBoxController(LootBoxController lootBoxController) {
 		this.lootBoxController = lootBoxController;
 		return this;
@@ -43,49 +37,12 @@ public class ParamsBuilder {
 	public ParamsBuilder setGameController(GameController gameController) {
 		this.gameController = gameController;
 		return this;
-	}
+	}	
 	
-	public ParamsBuilder setJump(boolean jump) { 
-    	this.jump = jump;
-    	return this;
-    }
-	
-	public ParamsBuilder setVelocity(double velocity) { 
-		this.velocity = velocity;
+	public ParamsBuilder setUnitController(UnitController unitController) {
+		this.unitController = unitController;
 		return this;
-	}
-    
-	public ParamsBuilder setAim(model.Vec2Double aim) { 
-		this.aim = aim; 
-		return this;
-	}
-    
-	public ParamsBuilder setShoot(boolean shoot) { 
-		this.shoot = shoot;
-		return this;
-	}
-    
-	public ParamsBuilder setReload(boolean reload) { 
-		this.reload = reload;
-		return this;
-	}
-    
-	public ParamsBuilder setSwapWeapon(boolean swapWeapon) { 
-		this.swapWeapon = swapWeapon;
-		return this;
-	}
-    
-	public ParamsBuilder setPlantMine(boolean plantMine) { 
-		this.plantMine = plantMine;
-		return this;
-	}
-	
-	public ParamsBuilder setJumpDown(boolean jumpDown) { 
-		this.jumpDown = jumpDown;
-		return this;
-	}
-    
-	
+	}	
 	//---------------Getter block----------------
 	
 	public Unit getUnit() {
@@ -100,10 +57,6 @@ public class ParamsBuilder {
 		return debug;
 	}
 
-	public EnemyController getEnemyController() {
-		return enemyController;
-	}
-
 	public LootBoxController getLootBoxController() {
 		return lootBoxController;
 	}
@@ -112,5 +65,8 @@ public class ParamsBuilder {
 		return gameController;
 	}
 	
+	public UnitController getUnitController() {
+		return unitController;
+	}
     
 }

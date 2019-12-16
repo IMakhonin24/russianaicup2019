@@ -15,6 +15,7 @@ import model.Vec2Float;
 import model.Weapon;
 import model.WeaponType;
 import сontroller.EnemyController;
+import сontroller.UnitController;
 
 public class Helper {
 	
@@ -40,12 +41,21 @@ public class Helper {
 		return (a.getX() - b.getX()) * (a.getX() - b.getX()) + (a.getY() - b.getY()) * (a.getY() - b.getY());
 	}	
 	
+	public static void debugDrawTarget(ParamsBuilder globalParams,Vec2Double target) 
+	{
+		Debug debug = globalParams.getDebug();
+		Unit unit = globalParams.getUnit();
+		
+		debug.draw(new CustomData.Line( Coordinate.toV2F(unit.getPosition(), 0, unit.getSize().getY()/2),Coordinate.toV2F(target),0.05f, Color.TARGET ) );
+	};
+	
 	public static Vec2Double getDefaultAim(ParamsBuilder globalParams) {
 		Vec2Double aim = new Vec2Double(0, 0);
 		
 		Unit unit = globalParams.getUnit();
-		EnemyController enemyController = globalParams.getEnemyController();
-		Unit nearestEnemy = enemyController.getNearestEnemy();
+		
+		UnitController unitController = globalParams.getUnitController();
+		Unit nearestEnemy = unitController.getAnyEnemy();
 		
 		if (nearestEnemy != null) {
 			aim = new Vec2Double(nearestEnemy.getPosition().getX() - unit.getPosition().getX(), nearestEnemy.getPosition().getY() - unit.getPosition().getY());
@@ -203,8 +213,10 @@ public class Helper {
 	//Перезарядка
 	public static boolean getDefaultReload(ParamsBuilder globalParams, Vec2Double targetPosition) {
 		Unit unit = globalParams.getUnit();
-		Unit nearestEnemy = globalParams.getEnemyController().getNearestEnemy();
 		
+		UnitController unitController = globalParams.getUnitController();
+		Unit nearestEnemy = unitController.getAnyEnemy();
+			
 		if(!isUnitVision(globalParams, nearestEnemy)) {
 			Weapon weapon = unit.getWeapon();
 			if ( weapon != null ) {
@@ -225,7 +237,8 @@ public class Helper {
 	public static boolean getDefaultShoot(ParamsBuilder globalParams, Vec2Double targetPosition) {
 		Game game = globalParams.getGame();
 		Unit unit = globalParams.getUnit();
-		Unit nearestEnemy = globalParams.getEnemyController().getNearestEnemy();
+		UnitController unitController = globalParams.getUnitController();
+		Unit nearestEnemy = unitController.getAnyEnemy();
 		
 		boolean shoot = false;
 		Weapon weapon = unit.getWeapon();
@@ -276,22 +289,22 @@ public class Helper {
 	
 	
 	public static Vec2Double getDistanceForPosition(ParamsBuilder globalParams, double x ) {
-		Unit unit = globalParams.getUnit();
-		EnemyController enemyController = globalParams.getEnemyController();
-		
-		Vec2Double enemyPosition = enemyController.getNearestEnemy().getPosition();
-		Vec2Double coorditane;
-		
-		if (unit.getPosition().getX() > enemyPosition.getX()) {
-			coorditane = new Vec2Double(enemyPosition.getX() + x, enemyPosition.getY());
-		}else {
-			coorditane = new Vec2Double(enemyPosition.getX() - x, enemyPosition.getY());
-		}
-		
-		coorditane = enemyPosition;
-//		coordinate = unit.getPosition();
+		UnitController unitController = globalParams.getUnitController();
 
-		return coorditane;
+		Unit unit = globalParams.getUnit();
+		Vec2Double unitPosition = unit.getPosition();
+		
+		Unit enemyUnit = unitController.getAnyEnemy(); 
+		Vec2Double enemyUnitPosition = enemyUnit.getPosition();
+		Vec2Double coordinate;
+		
+		if ( unitPosition.getX() > enemyUnitPosition.getX()) {
+			coordinate = new Vec2Double(enemyUnitPosition.getX() + x, enemyUnitPosition.getY());
+		}else {
+			coordinate = new Vec2Double(enemyUnitPosition.getX() - x, enemyUnitPosition.getY());
+		}
+
+		return coordinate;
 	
 	}
 	

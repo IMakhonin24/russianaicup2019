@@ -10,6 +10,8 @@ public class BuildAction {
 	}
 	
 	public UnitAction build() {	
-		return behavior.buildAction();
+		UnitAction action = behavior.buildAction();
+		action.setShoot(false);
+		return action;
 	}
 }

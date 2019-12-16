@@ -4,6 +4,7 @@ import behavior.*;
 import debug.*;
 import model.*;
 import strategy.*;
+import сontroller.UnitController;
 
 public class Attack_pistol implements Behavior
 {
@@ -27,14 +28,7 @@ public class Attack_pistol implements Behavior
 		Debug debug = globalParams.getDebug();
 		Game game = globalParams.getGame();
 		
-		
-		targetPosition = Helper.getDistanceForPosition(globalParams, 10.0);
-		
-		debug.draw(new CustomData.Line(Coordinate.toV2F(unit.getPosition()), Coordinate.toV2F(targetPosition), 0.1f, Color.ORANGE ) );
-		
-		Vec2Float targetP1 = new Vec2Float((float) unit.getPosition().getX(), (float) unit.getPosition().getY());
-		Vec2Float targetP2 = new Vec2Float((float) targetPosition.getX(), (float) targetPosition.getY());
-		debug.draw(new CustomData.Line(targetP1,targetP2,0.1f,Color.GREEN ) );
+		initTarget();
 		
 		velocity = getVelocity();
 		action.setVelocity(velocity);
@@ -68,6 +62,13 @@ public class Attack_pistol implements Behavior
 		return action;
 	}
 	
+	private void initTarget() 
+	{			
+		UnitController unitController = globalParams.getUnitController();
+		targetPosition = unitController.getAnyEnemy().getPosition();
+		Helper.debugDrawTarget(globalParams, targetPosition);
+	}
+	
 	private double getVelocity()
 	{
 		Unit unit = globalParams.getUnit();
@@ -77,7 +78,7 @@ public class Attack_pistol implements Behavior
 
 		double distanceMax = 30;
 		double distanceMin = 15;
-		if( !Helper.isUnitVision(globalParams, globalParams.getEnemyController().getNearestEnemy()) ) {
+		if( !Helper.isUnitVision(globalParams, globalParams.getUnitController().getAnyEnemy()) ) {
 			double distanceDelta = Math.abs(distanceMax-deltaX);
 			distanceMax = distanceMax - distanceDelta - 1;
 		}
