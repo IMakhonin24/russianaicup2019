@@ -44,6 +44,18 @@ public class MyStrategy {
 		//---------------------LOOT-----------------------
 					
 		int unitRole = unitController.getRole(unit);
+//		
+//		Vec2Double testPosEnem = unitController.getAnyEnemy().getPosition();
+//		debug.draw(new CustomData.Line( Coordinate.toV2F(testPosEnem),Coordinate.toV2F(testPosEnem,5,5),0.05f, Color.RED ) );
+//		
+//		testPosEnem = unitController.getEnemy1().getPosition();
+//		debug.draw(new CustomData.Line( Coordinate.toV2F(testPosEnem),Coordinate.toV2F(testPosEnem,5,5),0.05f, Color.BLUE ) );
+//		
+//		testPosEnem = unitController.getEnemy2().getPosition();
+//		debug.draw(new CustomData.Line( Coordinate.toV2F(testPosEnem),Coordinate.toV2F(testPosEnem,5,5),0.05f, Color.GREEN ) );
+
+
+
 		
 		Behavior behavior = new Empty(globalParams);
 		
@@ -118,6 +130,8 @@ public class MyStrategy {
 		UnitAction action = new BuildAction( behavior ).build();		
 		return action;
   }
+	
+	
 	
 	
 

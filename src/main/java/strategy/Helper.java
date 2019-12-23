@@ -41,6 +41,57 @@ public class Helper {
 		return (a.getX() - b.getX()) * (a.getX() - b.getX()) + (a.getY() - b.getY()) * (a.getY() - b.getY());
 	}	
 	
+	
+	public static Vec2Double getPerfectPosition(ParamsBuilder globalParams, int x1, int x2) {
+		
+		Game game = globalParams.getGame();
+		Unit unit = globalParams.getUnit();
+		
+		UnitController unitController = globalParams.getUnitController();
+
+		Unit nearestEnemy = unitController.getAnyEnemy();
+		
+		int[] altitude = new int[40];
+		
+		boolean isRightPos = false;
+		
+		
+		
+		if (nearestEnemy.getPosition().getX() - unit.getPosition().getX() < 0) {
+		      isRightPos = true;
+		    } else {
+		      isRightPos = false;
+		    }
+
+		
+	    int highestX = 7;
+	    for (int x = x1; x<x2; x++) {
+	      for (int y =1; y<=30; y++) {
+	        if (getTile(game, x, y) == Tile.WALL) {
+	          altitude[x] = y+1;
+	          break;
+	        }
+	      }
+	      if (isRightPos) {
+	        if (altitude[highestX] <= altitude[x]) {
+	          highestX = x;
+	        }
+	      }
+	    }
+	    if (isRightPos) {
+	      return new Vec2Double( 40 -highestX , altitude[highestX]);
+	    } else {
+	      return new Vec2Double(highestX, altitude[highestX]);
+	    }
+	  }
+	
+	
+	
+	public static Tile getTile(Game game, double x, double y) {
+	    return game.getLevel().getTiles()[(int) (x)][(int) (y)];
+	  }
+	
+	
 	public static void debugDrawTarget(ParamsBuilder globalParams,Vec2Double target) 
 	{
 		Debug debug = globalParams.getDebug();

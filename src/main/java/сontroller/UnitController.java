@@ -1,5 +1,6 @@
 package сontroller;
 
+import debug.Debug;
 import model.*;
 import strategy.*;
 
@@ -10,11 +11,11 @@ public class UnitController {
 	
 	private ParamsBuilder globalParams;
 	
-	public static extUnit myUnit1;
-	public static extUnit myUnit2;
+	private extUnit myUnit1;
+	private extUnit myUnit2;
 	
-	public static Unit enemyUnit1;
-	public static Unit enemyUnit2;
+	private Unit enemyUnit1 = null;
+	private Unit enemyUnit2 = null;
 	
 	public UnitController(ParamsBuilder globalParams) {
 		this.globalParams = globalParams;
@@ -26,27 +27,28 @@ public class UnitController {
 	{
 		Game game = globalParams.getGame();
 		Unit unit = globalParams.getUnit();
+		Debug debug = globalParams.getDebug();
 		
 		Unit[] allUnitsOnMap = game.getUnits();	
 		for (Unit someUnit : allUnitsOnMap) {
 			if (someUnit.getPlayerId() == unit.getPlayerId()) {
-				if (myUnit1 == null) {
-					myUnit1 = new extUnit(someUnit);
-					myUnit1.setRole(ROLE_MAIN);
+				if (this.myUnit1 == null) {
+					this.myUnit1 = new extUnit(someUnit);
+					this.myUnit1.setRole(ROLE_MAIN);
 					continue;
 				}
-				if (myUnit2 == null) {
-					myUnit2 = new extUnit(someUnit);
-					myUnit2.setRole(ROLE_SUPPORT);
+				if (this.myUnit2 == null) {
+					this.myUnit2 = new extUnit(someUnit);
+					this.myUnit2.setRole(ROLE_SUPPORT);
 					continue;
 				}
 			}else {
-				if (enemyUnit1 == null) {
-					enemyUnit1 = someUnit;
+				if (this.enemyUnit1 == null) {
+					this.enemyUnit1 = someUnit;
 					continue;
 				}
-				if (enemyUnit2 == null) {
-					enemyUnit2 = someUnit;
+				if (this.enemyUnit2 == null) {
+					this.enemyUnit2 = someUnit;
 					continue;
 				}
 			}

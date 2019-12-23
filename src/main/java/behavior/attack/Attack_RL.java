@@ -35,7 +35,7 @@ public class Attack_RL implements Behavior
 	
 		boolean jump = getJump();
 		boolean jumpDown = !jump;
-	    Vec2Double aim = strategy.Helper.getDefaultAim(globalParams);
+	    Vec2Double aim = getAim();
 	    boolean shoot = strategy.Helper.getDefaultShoot(globalParams, targetPosition);
 	    boolean reload = strategy.Helper.getDefaultReload(globalParams, targetPosition);
 	    boolean swapWeapon = false;
@@ -60,6 +60,11 @@ public class Attack_RL implements Behavior
 	    action.setPlantMine(plantMine);
 
 		return action;
+	}
+	
+	private Vec2Double getAim() {
+		
+		return strategy.Helper.getDefaultAim(globalParams);
 	}
 	
 	private void initTarget() 

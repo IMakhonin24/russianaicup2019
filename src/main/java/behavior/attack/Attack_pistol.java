@@ -66,6 +66,15 @@ public class Attack_pistol implements Behavior
 	{			
 		UnitController unitController = globalParams.getUnitController();
 		targetPosition = unitController.getAnyEnemy().getPosition();
+		
+		Unit unit = globalParams.getUnit();
+		Debug debug = globalParams.getDebug();
+		
+		Vec2Double testPerfPos = Helper.getPerfectPosition(globalParams, 1, 20);
+		
+		debug.draw(new CustomData.Line( Coordinate.toV2F(unit.getPosition(), 0, unit.getSize().getY()/2),Coordinate.toV2F(testPerfPos),0.05f, Color.YELLOW ) );
+
+		
 		Helper.debugDrawTarget(globalParams, targetPosition);
 	}
 	
